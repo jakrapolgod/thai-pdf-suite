@@ -70,6 +70,8 @@ Source: "{#SrcDir}\_internal\tessdata\*"; DestDir: "{app}\_internal\tessdata"; \
     Flags: ignoreversion recursesubdirs; Components: ocrdata
 Source: "..\README.md"; DestDir: "{app}"; DestName: "คู่มือการใช้งาน.md"; \
     Flags: ignoreversion; Components: main
+Source: "..\LICENSE"; DestDir: "{app}"; DestName: "สัญญาอนุญาต.txt"; \
+    Flags: ignoreversion; Components: main
 
 [Icons]
 Name: "{group}\{#AppName}"; Filename: "{app}\{#AppExe}"
