@@ -1,0 +1,17 @@
+# Thai PDF Suite
+# ติดตั้งด้วย:  python -m pip install -r requirements.txt
+
+pymupdf>=1.24        # อ่าน PDF ระดับ glyph, หาตาราง, เรนเดอร์หน้า, สร้าง PDF จากรูป
+fonttools>=4.50      # อ่านฟอนต์ที่ฝังใน PDF เพื่อกู้ตัวอักษรที่ตาราง ToUnicode เก็บผิด
+                     # จำเป็น ไม่ใช่ตัวเลือก ถ้าขาดตัวนี้ ไฟล์จาก Excel จะวรรณยุกต์หาย
+pillow>=10.0         # เปิดและแปลงรูปภาพ
+python-docx>=1.1     # สร้างไฟล์ Word
+openpyxl>=3.1        # สร้างไฟล์ Excel
+fastapi>=0.110       # เซิร์ฟเวอร์ในเครื่อง
+uvicorn>=0.27        # ตัวรันเซิร์ฟเวอร์
+python-multipart>=0.0.9   # รับไฟล์อัปโหลด
+
+# OCR สำหรับ PDF ที่เป็นภาพสแกน ไม่ใช่แพ็กเกจ Python
+# ติดตั้งแยกด้วย:  winget install --id UB-Mannheim.TesseractOCR
+# แล้ววางไฟล์ tha.traineddata จาก https://github.com/tesseract-ocr/tessdata_best
+# ลงในโฟลเดอร์ tessdata ของ Tesseract

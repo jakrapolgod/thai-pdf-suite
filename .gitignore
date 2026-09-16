@@ -1,0 +1,30 @@
+# ผลลัพธ์จากการแพ็กโปรแกรมและตัวติดตั้ง
+# ตัวติดตั้งแจกผ่านหน้า Releases ไม่เก็บไว้ในโค้ด เพราะเป็นไฟล์ไบนารีขนาดใหญ่
+/dist/
+/build/work/
+
+# ไฟล์ภาษาของ OCR ราว 33 MB ดาวน์โหลดเองตามวิธีใน README
+/tessdata/
+
+# ไฟล์ที่ชุดทดสอบสร้างระหว่างทาง
+/output/
+
+# ไอคอนถูกสร้างใหม่ทุกครั้งที่แพ็กโปรแกรม
+/web/app.ico
+/web/app.png
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+
+# เครื่องมือแก้โค้ด
+/.claude/
+.vscode/
+.idea/
+
+# Windows
+Thumbs.db
+desktop.ini

@@ -1,0 +1,13 @@
+# ให้ Git จัดการตัวจบบรรทัดให้สม่ำเสมอข้ามเครื่อง
+* text=auto eol=lf
+
+# ไฟล์ของ Windows ต้องเป็น CRLF ไม่งั้นบางตัวทำงานผิด
+*.bat text eol=crlf
+*.cmd text eol=crlf
+*.iss text eol=crlf
+
+# ไฟล์ไบนารี ห้ามแตะ
+*.png binary
+*.ico binary
+*.pdf binary
+*.traineddata binary

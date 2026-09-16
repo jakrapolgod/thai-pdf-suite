@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Thai PDF Suite</title>
+<link rel="stylesheet" href="/web/style.css">
+</head>
+<body>
+
+<header class="topbar">
+  <div class="brand">
+    <span class="mark">ไทย</span>
+    <div>
+      <h1>Thai PDF Suite</h1>
+      <p>รวมรูปเป็น PDF และแปลง PDF ภาษาไทยเป็น Word / Excel โดยไม่ให้วรรณยุกต์เพี้ยน</p>
+    </div>
+  </div>
+  <div class="badges">
+    <div class="textsize" title="ปรับขนาดตัวอักษรทั้งหน้าจอ">
+      <span>ขนาดตัวอักษร</span>
+      <button class="small" id="fs-down" aria-label="ตัวอักษรเล็กลง">ก</button>
+      <button class="big" id="fs-up" aria-label="ตัวอักษรใหญ่ขึ้น">ก</button>
+    </div>
+    <span class="badge" id="badge-offline">ทำงานในเครื่อง ไม่ส่งไฟล์ออก</span>
+    <span class="badge" id="badge-ocr">กำลังตรวจ OCR…</span>
+  </div>
+</header>
+
+<nav class="tabs">
+  <button class="tab active" data-tab="merge">รวมรูปเป็น PDF</button>
+  <button class="tab" data-tab="convert">PDF เป็น Word / Excel</button>
+  <button class="tab" data-tab="checker">ตรวจข้อความไทย</button>
+</nav>
+
+<!-- ============================================ รวมรูปเป็น PDF -->
+<section class="panel active" id="tab-merge">
+  <div class="grid">
+    <div class="col-main">
+      <div class="dropzone" id="img-drop">
+        <strong>ลากรูปมาวางที่นี่</strong>
+        <span>หรือกดเพื่อเลือกไฟล์ · JPG, PNG, WEBP, TIFF, BMP, GIF</span>
+        <input type="file" id="img-input" accept="image/*" multiple hidden>
+      </div>
+
+      <div class="toolbar" id="img-toolbar" hidden>
+        <span id="img-count">0 รูป</span>
+        <div class="spacer"></div>
+        <button class="ghost" id="img-sort-name">เรียงตามชื่อไฟล์</button>
+        <button class="ghost" id="img-reverse">กลับลำดับ</button>
+        <button class="ghost danger" id="img-clear">ล้างทั้งหมด</button>
+      </div>
+      <p class="hint" id="img-hint" hidden>ลากรูปเพื่อสลับลำดับหน้า</p>
+      <div class="thumbs" id="img-list"></div>
+    </div>
+
+    <aside class="col-side">
+      <h3>ตั้งค่าไฟล์ PDF</h3>
+
+      <label>ขนาดหน้ากระดาษ
+        <select id="m-page-size">
+          <option value="fit">เท่ารูปต้นฉบับ (ไม่มีขอบขาว)</option>
+          <option value="A4" selected>A4</option>
+          <option value="A5">A5</option>
+          <option value="A3">A3</option>
+          <option value="Letter">Letter</option>
+          <option value="Legal">Legal</option>
+        </select>
+      </label>
+
+      <label>การวางหน้า
+        <select id="m-orientation">
+          <option value="auto" selected>อัตโนมัติตามรูป</option>
+          <option value="portrait">แนวตั้งทั้งหมด</option>
+          <option value="landscape">แนวนอนทั้งหมด</option>
+        </select>
+      </label>
+
+      <label>ขอบกระดาษ <span class="val" id="m-margin-val">6 มม.</span>
+        <input type="range" id="m-margin" min="0" max="30" step="1" value="6">
+      </label>
+
+      <label>คุณภาพ
+        <select id="m-quality">
+          <option value="original">เท่าต้นฉบับ (ไม่บีบอัดซ้ำ)</option>
+          <option value="balanced" selected>สมดุล (แนะนำ)</option>
+          <option value="compact">ไฟล์เล็ก (เหมาะกับส่งในแชต)</option>
+        </select>
+      </label>
+
+      <label class="q-only">คุณภาพ JPEG <span class="val" id="m-jq-val">92</span>
+        <input type="range" id="m-jpeg-q" min="60" max="100" step="1" value="92">
+      </label>
+
+      <label class="compact-only" hidden>ความละเอียดสูงสุด <span class="val" id="m-px-val">2000 px</span>
+        <input type="range" id="m-max-px" min="800" max="4000" step="100" value="2000">
+      </label>
+
+      <label class="check">
+        <input type="checkbox" id="m-fill"> ขยายรูปเต็มหน้า (ตัดส่วนเกิน)
+      </label>
+
+      <label>ชื่อไฟล์ผลลัพธ์
+        <input type="text" id="m-name" value="รวมรูป.pdf">
+      </label>
+
+      <button class="primary" id="img-build" disabled>สร้างไฟล์ PDF</button>
+      <div class="result" id="img-result" hidden></div>
+    </aside>
+  </div>
+</section>
+
+<!-- ============================================ PDF เป็น Word / Excel -->
+<section class="panel" id="tab-convert">
+  <div class="grid">
+    <div class="col-main">
+      <div class="dropzone" id="pdf-drop">
+        <strong>ลากไฟล์ PDF มาวางที่นี่</strong>
+        <span>หรือกดเพื่อเลือกไฟล์</span>
+        <input type="file" id="pdf-input" accept="application/pdf,.pdf" hidden>
+      </div>
+
+      <div id="analysis" hidden>
+        <div class="filebar">
+          <div>
+            <strong id="a-name"></strong>
+            <span class="muted" id="a-pages"></span>
+          </div>
+          <button class="ghost" id="a-reset">เปลี่ยนไฟล์</button>
+        </div>
+
+        <div class="cards" id="a-cards"></div>
+        <div id="a-ocr-box"></div>
+
+        <h3 class="section-title">สิ่งที่แอปแก้ให้ระหว่างอ่าน</h3>
+        <div id="a-fixed" class="issues"></div>
+
+        <h3 class="section-title">ตัวอย่างข้อความที่อ่านได้</h3>
+        <div class="split">
+          <div class="preview-pane" id="a-preview"></div>
+          <div class="page-pane">
+            <div class="page-nav">
+              <button class="ghost" id="pg-prev">ก่อนหน้า</button>
+              <span id="pg-label">หน้า 1</span>
+              <button class="ghost" id="pg-next">ถัดไป</button>
+            </div>
+            <img id="pg-img" alt="ภาพหน้าต้นฉบับ">
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <aside class="col-side" id="convert-side" hidden>
+      <h3>ตั้งค่าไฟล์ผลลัพธ์</h3>
+
+      <label>ฟอนต์ไทยในไฟล์ผลลัพธ์
+        <select id="c-font"></select>
+      </label>
+      <p class="hint" id="c-font-note"></p>
+
+      <label>ขนาดตัวอักษรพื้นฐาน <span class="val" id="c-size-val">12 pt</span>
+        <input type="range" id="c-size" min="8" max="20" step="1" value="12">
+      </label>
+
+      <details>
+        <summary>ตัวเลือกไฟล์ Word</summary>
+        <label class="check"><input type="checkbox" id="c-keep-size" checked> ใช้ขนาดหน้ากระดาษเดิม</label>
+        <label class="check"><input type="checkbox" id="c-page-break" checked> ขึ้นหน้าใหม่ตามหน้าเดิม</label>
+        <label>ปรับขนาดตัวอักษร <span class="val" id="c-scale-val">100%</span>
+          <input type="range" id="c-scale" min="80" max="140" step="5" value="100">
+        </label>
+      </details>
+
+      <details>
+        <summary>ตัวเลือกไฟล์ Excel</summary>
+        <label class="check"><input type="checkbox" id="c-numbers" checked> แปลงข้อความตัวเลขเป็นตัวเลขจริง</label>
+        <label class="check"><input type="checkbox" id="c-sheet-per-table" checked> แยกชีตต่อหนึ่งตาราง</label>
+        <label class="check"><input type="checkbox" id="c-text-sheet" checked> เพิ่มชีตรวมข้อความ</label>
+      </details>
+
+      <div class="btn-row">
+        <button class="primary" id="btn-docx">แปลงเป็น Word</button>
+        <button class="primary alt" id="btn-xlsx">แปลงเป็น Excel</button>
+      </div>
+      <button class="ghost wide" id="btn-txt">ดาวน์โหลดข้อความล้วน</button>
+
+      <div class="result" id="c-result" hidden></div>
+    </aside>
+  </div>
+</section>
+
+<!-- ============================================ ตรวจข้อความไทย -->
+<section class="panel" id="tab-checker">
+  <div class="checker">
+    <p class="lead">วางข้อความไทยที่สงสัยว่าเพี้ยน เพื่อดูว่าผิดตรงไหนในระดับรหัสอักขระ
+      เครื่องมือนี้ใช้ตรวจงานที่แปลงมาจากโปรแกรมอื่นได้ด้วย</p>
+    <textarea id="chk-input" rows="5" placeholder="วางข้อความที่นี่ เช่น นํ้าใจ หรือ เเละ"></textarea>
+    <div class="btn-row">
+      <button class="primary" id="chk-run">ตรวจสอบ</button>
+      <button class="ghost" id="chk-sample">ใส่ตัวอย่างข้อความเสีย</button>
+    </div>
+    <div id="chk-result" hidden></div>
+  </div>
+</section>
+
+<footer>
+  <span>ทุกไฟล์ถูกประมวลผลในเครื่องนี้เท่านั้น · ไฟล์ชั่วคราวถูกลบอัตโนมัติภายใน 6 ชั่วโมง</span>
+</footer>
+
+<div class="toast" id="toast" hidden></div>
+<div class="overlay" id="overlay" hidden><div class="spinner"></div><p id="overlay-text">กำลังทำงาน…</p></div>
+
+<script src="/web/app.js"></script>
+</body>
+</html>
